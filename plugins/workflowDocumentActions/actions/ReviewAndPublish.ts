@@ -27,13 +27,13 @@ export const ReviewAndPublish = (props: DocumentActionProps) => {
   /* remove the _readyForReview field and publish the document
    * this removes it from the "workflow"
    */
-  const onHandle = useCallback(async () => {
+  const onHandle = async () => {
     if (draft) {
       patch.execute([{ unset: ['_readyForReview'] }], draft)
       publish.execute()
       onComplete()
     }
-  }, [draft])
+  }
 
   return {
     disabled: publish.disabled || !draft || !isAdmin,
