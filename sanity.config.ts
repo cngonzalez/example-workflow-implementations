@@ -1,25 +1,53 @@
-/**
- * This config is used to set up Sanity Studio that's mounted on the `/pages/studio/[[...index]].tsx` route
+import { visionTool } from '@sanity/vision'
+import { apiVersion, dataset, previewSecretId, projectId } from 'lib/sanity.api'
+import { settingsPlugin, settingsStructure } from 'plugins/settings'
+import { workflowDocumentActions } from 'plugins/workflowDocumentActions'
+import { workflowMetadataDocuments } from 'plugins/workflowMetadataDocuments'
+import { workflowWithPlugin } from 'plugins/workflowWithPlugin'
+import { defineConfig, definePlugin } from 'sanity'
+import { deskTool } from 'sanity/desk'
+import authorType from 'schemas/author'
+import postType from 'schemas/post'
+import settingsType from 'schemas/settings'
+
+/* ABOUT THIS FILE:
+ * Each subsequent workspace represents a different, more complex pattern.
+ * 1. First, we define the base configuration so we can inherit it in each workspace.
+ * 2. Then, we'll implement each individual pattern in a separate workspace.
+ * For more info, those patterns are also defined as plugins in the plugins folder.
  */
 
-import { visionTool } from '@sanity/vision'
-import { defineConfig } from 'sanity'
-import { deskTool } from 'sanity/desk'
-
-// see https://www.sanity.io/docs/api-versioning for how versioning works
-import { apiVersion, dataset, projectId } from './sanity/env'
-import { schema } from './sanity/schema'
-
-export default defineConfig({
-  basePath: '/studio',
-  projectId,
-  dataset,
-  //edit schemas in './sanity/schema'
-  schema,
-  plugins: [
-    deskTool(),
-    // Vision lets you query your content with GROQ in the studio
-    // https://www.sanity.io/docs/the-vision-plugin
-    visionTool({ defaultApiVersion: apiVersion }),
-  ],
+const basePlugin = definePlugin({
+  name: 'baseConfig',
+  schema: {
+    types: [authorType, postType, settingsType],
+  },
+  plugins: [visionTool({ defaultApiVersion: apiVersion })],
 })
+
+export default defineConfig([
+  {
+    name: 'workflow-document-actions',
+    basePath: '/studio/workflow-document-actions',
+    projectId,
+    dataset,
+    title: 'Workflow document actions',
+    plugins: [workflowDocumentActions(), basePlugin()],
+  },
+  {
+    name: 'workflow-metadata-documents',
+    basePath: '/studio/workflow-metadata-documents',
+    projectId,
+    dataset,
+    title: 'Workflow with Metadata Documents',
+    plugins: [workflowMetadataDocuments(), basePlugin()],
+  },
+  {
+    name: 'workflow-plugin',
+    basePath: '/studio/workflow-plugin',
+    projectId,
+    dataset,
+    title: 'Workflow with plugin',
+    plugins: [workflowWithPlugin(), basePlugin()],
+  },
+])
