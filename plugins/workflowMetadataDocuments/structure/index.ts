@@ -4,6 +4,7 @@
 import { map } from 'rxjs'
 import { DocumentStore, SanityDocumentLike } from 'sanity'
 import { StructureBuilder, StructureResolver } from 'sanity/desk'
+import { startCase } from 'lodash'
 
 const getDocumentsByWorkflowState = (
   S: StructureBuilder,
@@ -12,10 +13,7 @@ const getDocumentsByWorkflowState = (
   workflowState: string
 ) => {
   const query = `*[_type == 'workflow.metadata' && state == '${workflowState}']{
-      'document': coalesce(
-        *[_id == "drafts." + ^.documentId]{_id,_type}[0],
-        *[_id == ^.documentId]{_id,_type}[0]
-      )
+      'document': *[_id == "drafts." + ^.documentId]{_id,_type}[0]
     }[].document`
 
   return documentStore
@@ -24,20 +22,19 @@ const getDocumentsByWorkflowState = (
       query,
       //params for query
       { workflowState },
-      //only listen for changes every second
       { throttleTime: 1000 }
     )
     .pipe(
       //@ts-expect-error
-      map((docs) =>
-        S.list()
-          .title(workflowState)
+      map((docs) => {
+        return S.list()
+          .title(startCase(workflowState))
           .items(
             docs.map((doc: SanityDocumentLike) => {
               return S.documentListItem().id(doc._id).schemaType(doc._type)
             })
           )
-      )
+      })
     )
 }
 
@@ -55,7 +52,7 @@ export const structure: StructureResolver = (S, { documentStore }) => {
             .items([
               S.listItem()
                 .title('Ready for release')
-                .child(
+                .child(() =>
                   getDocumentsByWorkflowState(
                     S,
                     documentStore,
@@ -64,7 +61,7 @@ export const structure: StructureResolver = (S, { documentStore }) => {
                 ),
               S.listItem()
                 .title('Ready for review')
-                .child(
+                .child(() =>
                   getDocumentsByWorkflowState(
                     S,
                     documentStore,
