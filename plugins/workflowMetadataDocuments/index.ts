@@ -10,7 +10,8 @@
 import { definePlugin } from 'sanity'
 import { deskTool } from 'sanity/desk'
 import { actions } from './actions'
-// import { structure } from './structure'
+import { workflowSchemas } from './schemas'
+import { structure } from './structure'
 
 export const workflowMetadataDocuments = definePlugin({
   name: 'workflow-metadata-documents',
@@ -18,5 +19,8 @@ export const workflowMetadataDocuments = definePlugin({
     //@ts-expect-error until disabled boolean resolved
     actions: actions,
   },
-  plugins: [deskTool()],
+  plugins: [deskTool({ structure })],
+  schema: {
+    types: workflowSchemas,
+  },
 })
