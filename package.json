@@ -22,6 +22,7 @@
     "next-sanity": "^3.1.9",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "rxjs": "^7.8.0",
     "sanity": "^3.1.4",
     "sanity-plugin-workflow": "^1.0.0-beta.1",
     "styled-components": "^5.3.6"

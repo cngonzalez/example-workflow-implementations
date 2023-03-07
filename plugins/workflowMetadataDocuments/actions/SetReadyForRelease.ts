@@ -1,30 +1,25 @@
-import { DocumentActionProps, useClient, useCurrentUser } from 'sanity'
-import { useMetadataDocument } from '../utils/useMetadataDocument'
+import { DocumentActionProps, useCurrentUser } from 'sanity'
+import { useWorkflowMetadata } from '../utils/useWorkflowMetadata'
 
 export const SetReadyForRelease = (props: DocumentActionProps) => {
   const { id, draft, onComplete } = props
-  const { data, loading, error } = useMetadataDocument(id)
+  const { data, setState } = useWorkflowMetadata(id)
 
   const user = useCurrentUser()
-  const client = useClient({ apiVersion: '2023-02-28' })
 
   const onHandle = async () => {
     //TODO: prove out a Slack ping here. We can even use the username!
-    client
-      .patch(`workflow-metadata.${id}`)
-      .set({ state: 'readyForRelease' })
-      .commit({ visibility: 'async' })
-      .then(() => onComplete())
+    setState('readyForRelease')
+    onComplete()
   }
 
   //only show this if we have metadata showing we're in the workflow
-  if (data?.metadata?.state !== 'readyForReview') {
+  if (data?.state !== 'readyForReview') {
     return null
   }
 
   return {
-    //add whatever admin rules make sense here
-    disabled: !draft || loading || error,
+    disabled: !draft,
     label: 'Mark Ready For Release',
     onHandle,
   }

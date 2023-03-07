@@ -1,14 +1,17 @@
 import { useCallback, useEffect, useState } from 'react'
 import {
   DocumentActionProps,
+  PatchEvent,
+  useClient,
   useCurrentUser,
   useDocumentOperation,
   userHasRole,
 } from 'sanity'
 
 export const ReviewAndPublish = (props: DocumentActionProps) => {
-  const { id, type, draft, onComplete } = props
+  const { id, type, draft, published, onComplete } = props
   const user = useCurrentUser()
+  const client = useClient()
   const isAdmin =
     userHasRole(user, 'administrator') || userHasRole(user, 'editor')
   // const isAdmin = true
@@ -28,15 +31,13 @@ export const ReviewAndPublish = (props: DocumentActionProps) => {
    * this removes it from the "workflow"
    */
   const onHandle = async () => {
-    if (draft) {
-      patch.execute([{ unset: ['_readyForReview'] }], draft)
-      publish.execute()
-      onComplete()
-    }
+    patch.execute([{ unset: ['_readyForReview'] }], draft)
+    publish.execute()
+    onComplete()
   }
 
   return {
-    disabled: publish.disabled || !draft || !isAdmin,
+    disabled: publish.disabled || !draft,
     label: 'Review and Publish',
     onHandle,
   }
