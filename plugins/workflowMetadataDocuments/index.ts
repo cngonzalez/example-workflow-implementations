@@ -8,7 +8,6 @@
  */
 
 import { definePlugin } from 'sanity'
-import { deskTool } from 'sanity/desk'
 import { actions } from './actions'
 import { workflowSchemas } from './schemas'
 

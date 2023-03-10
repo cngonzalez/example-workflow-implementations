@@ -7,7 +7,6 @@
  */
 
 import { definePlugin } from 'sanity'
-import { deskTool } from 'sanity/desk'
 import { actions } from './actions'
 
 export const workflowDocumentActions = definePlugin({

@@ -25,6 +25,7 @@ const getDocumentsByWorkflowState = (
       { throttleTime: 1000 }
     )
     .pipe(
+      //@ts-ignore
       map((docs) => {
         return S.list()
           .title(startCase(workflowState))
