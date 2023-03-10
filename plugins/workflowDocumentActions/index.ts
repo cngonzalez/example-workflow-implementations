@@ -9,7 +9,6 @@
 import { definePlugin } from 'sanity'
 import { deskTool } from 'sanity/desk'
 import { actions } from './actions'
-import { structure } from './structure'
 
 export const workflowDocumentActions = definePlugin({
   name: 'workflow-document-actions',
@@ -17,5 +16,4 @@ export const workflowDocumentActions = definePlugin({
     //@ts-expect-error until disabled boolean resolved
     actions: actions,
   },
-  plugins: [deskTool({ structure: structure })],
 })

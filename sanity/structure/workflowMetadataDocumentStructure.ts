@@ -25,7 +25,6 @@ const getDocumentsByWorkflowState = (
       { throttleTime: 1000 }
     )
     .pipe(
-      //@ts-expect-error
       map((docs) => {
         return S.list()
           .title(startCase(workflowState))
@@ -38,7 +37,10 @@ const getDocumentsByWorkflowState = (
     )
 }
 
-export const structure: StructureResolver = (S, { documentStore }) => {
+export const workflowMetadataDocumentStructure: StructureResolver = (
+  S,
+  { documentStore }
+) => {
   //dont show the workflow metadata documents in the desk
   const omittedTypes = ['workflow.metadata']
   return S.list()
