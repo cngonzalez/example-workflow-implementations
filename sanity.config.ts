@@ -6,6 +6,10 @@ import { workflowMetadataDocuments } from 'plugins/workflowMetadataDocuments'
 import { workflowWithPlugin } from 'plugins/workflowWithPlugin'
 import { defineConfig, definePlugin } from 'sanity'
 import { deskTool } from 'sanity/desk'
+import {
+  workflowMetadataDocumentStructure,
+  workflowDocumentActionStructure,
+} from './sanity/structure'
 import authorType from 'schemas/author'
 import postType from 'schemas/post'
 import settingsType from 'schemas/settings'
@@ -32,7 +36,11 @@ export default defineConfig([
     projectId,
     dataset,
     title: 'Workflow document actions',
-    plugins: [workflowDocumentActions(), basePlugin()],
+    plugins: [
+      deskTool({ structure: workflowDocumentActionStructure }),
+      basePlugin(),
+      workflowDocumentActions(),
+    ],
   },
   {
     name: 'workflow-metadata-documents',
@@ -40,7 +48,11 @@ export default defineConfig([
     projectId,
     dataset,
     title: 'Workflow with Metadata Documents',
-    plugins: [workflowMetadataDocuments(), basePlugin()],
+    plugins: [
+      deskTool({ structure: workflowMetadataDocumentStructure }),
+      basePlugin(),
+      workflowMetadataDocuments(),
+    ],
   },
   {
     name: 'workflow-plugin',

@@ -1,6 +1,6 @@
 import { StructureResolver } from 'sanity/desk'
 
-export const structure: StructureResolver = (S) => {
+export const workflowDocumentActionStructure: StructureResolver = (S) => {
   return S.list()
     .title('Content')
     .items([

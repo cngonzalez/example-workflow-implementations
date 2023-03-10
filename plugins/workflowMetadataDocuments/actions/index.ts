@@ -15,16 +15,20 @@ export const actions = (
     return prev
   }
 
+  const publishAction = prev.find((action) => action.action === 'publish')
+
   return [
     SetReadyForReview,
     SetReadyForRelease,
-    ...prev.map((originalAction) => {
-      //replace the publish action with the ReviewAndPublish action
-      //this will be disabled for non-admins
-      if (originalAction.action === 'publish') {
-        return PublishAndDeleteMetadata
-      }
-      return originalAction
-    }),
+    PublishAndDeleteMetadata,
+    //this usually won't show up as the default action, but if it does, it will be disabled
+    //for contributors, but available for admins who need to push a quick fix
+    publishAction,
+    ...prev.filter(
+      (originalAction) =>
+        //replace the publish action with the ReviewAndPublish action
+        //this will be disabled for non-admins
+        originalAction.action !== 'publish'
+    ),
   ]
 }
