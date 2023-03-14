@@ -71,8 +71,21 @@ export const workflowMetadataDocumentStructure: StructureResolver = (
                     'readyForReview'
                   )
                 ),
-              //you could theoretically add a query for all documents that are not in a workflow state
-              //but are drafts.
+              S.divider(),
+              S.listItem()
+                .title('Published')
+                .child(
+                  S.documentTypeList('post')
+                    .title('Published')
+                    .filter('_type == "post" && _publishedAt < now()')
+                ),
+              S.listItem()
+                .title('Scheduled')
+                .child(
+                  S.documentTypeList('post')
+                    .title('Scheduled')
+                    .filter('_type == "post" && _publishedAt > now()')
+                ),
             ])
         ),
       S.divider(),
