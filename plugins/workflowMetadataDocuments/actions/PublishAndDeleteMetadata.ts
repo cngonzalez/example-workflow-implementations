@@ -14,6 +14,7 @@ export const PublishAndDeleteMetadata = (
     const { id, type } = props
     const { data, deleteMetadata } = useWorkflowMetadata(id)
     const { patch } = useDocumentOperation(id, type)
+    
 
     const user = useCurrentUser()
     const isAdmin =
