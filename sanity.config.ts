@@ -13,6 +13,7 @@ import {
 import authorType from 'schemas/author'
 import postType from 'schemas/post'
 import settingsType from 'schemas/settings'
+import { scheduledPublishing } from '@sanity/scheduled-publishing'
 
 /* ABOUT THIS FILE:
  * Each subsequent workspace represents a different, more complex pattern.
@@ -52,6 +53,7 @@ export default defineConfig([
       deskTool({ structure: workflowMetadataDocumentStructure }),
       basePlugin(),
       workflowMetadataDocuments(),
+      scheduledPublishing(),
     ],
   },
   {
