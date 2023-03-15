@@ -1,9 +1,14 @@
-import { DocumentActionProps, useCurrentUser } from 'sanity'
+import {
+  DocumentActionProps,
+  useCurrentUser,
+  useValidationStatus,
+} from 'sanity'
 import { useWorkflowMetadata } from '../utils/useWorkflowMetadata'
 
 export const SetReadyForRelease = (props: DocumentActionProps) => {
-  const { id, draft, onComplete } = props
+  const { id, type, draft, onComplete } = props
   const { data, setState } = useWorkflowMetadata(id)
+  const { validation, isValidating } = useValidationStatus(id, type)
 
   const user = useCurrentUser()
 
@@ -19,7 +24,7 @@ export const SetReadyForRelease = (props: DocumentActionProps) => {
   }
 
   return {
-    disabled: !draft,
+    disabled: !draft || isValidating || validation.length,
     label: 'Mark Ready For Release',
     onHandle,
   }

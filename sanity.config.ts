@@ -52,8 +52,8 @@ export default defineConfig([
     plugins: [
       deskTool({ structure: workflowMetadataDocumentStructure }),
       basePlugin(),
-      workflowMetadataDocuments(),
       scheduledPublishing(),
+      workflowMetadataDocuments(),
     ],
   },
   {
