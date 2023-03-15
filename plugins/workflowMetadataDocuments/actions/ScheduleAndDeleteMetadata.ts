@@ -34,7 +34,7 @@ export const ScheduleAndDeleteMetadata = (
       ]
       const handleMessageEvent = async (event: MessageEvent) => {
         if (event.type === 'scheduleDelete') {
-          patch.execute([{ unset: ['publishedAt'] }], { _id: id })
+          patch.execute([{ unset: ['_publishedAt'] }], { _id: id })
           //there's no more schedule, send doc back to its previous state
           //or to beginning of workflow if needed
           return setState('readyForRelease')
