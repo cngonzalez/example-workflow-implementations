@@ -72,20 +72,22 @@ export const workflowMetadataDocumentStructure: StructureResolver = (
                   )
                 ),
               S.divider(),
-              S.listItem()
-                .title('Published')
-                .child(
-                  S.documentTypeList('post')
-                    .title('Published')
-                    .filter('_type == "post" && _publishedAt < now()')
-                ),
-              S.listItem()
-                .title('Scheduled')
-                .child(
-                  S.documentTypeList('post')
-                    .title('Scheduled')
-                    .filter('_type == "post" && _publishedAt > now()')
-                ),
+              S.documentTypeListItem('post').title('All posts'),
+              S.listItem().title('Published').child(
+                S.documentList()
+                  .schemaType('post')
+                  .title('Published')
+                  .filter('_type == "post" && _publishedAt < now()')
+                  //don't let people create new posts here
+                  .initialValueTemplates([])
+              ),
+              S.listItem().title('Scheduled').child(
+                S.documentTypeList('post')
+                  .title('Scheduled')
+                  .filter('_type == "post" && _publishedAt > now()')
+                  //don't let people create new posts here
+                  .initialValueTemplates([])
+              ),
             ])
         ),
       S.divider(),

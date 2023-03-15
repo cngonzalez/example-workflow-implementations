@@ -14,6 +14,7 @@ import { workflowSchemas } from './schemas'
 export const workflowMetadataDocuments = definePlugin({
   name: 'workflow-metadata-documents',
   document: {
+    //@ts-expect-error until disabled boolean resolved
     actions: actions,
   },
   schema: {

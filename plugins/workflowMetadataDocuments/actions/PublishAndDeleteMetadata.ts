@@ -14,7 +14,6 @@ export const PublishAndDeleteMetadata = (
     const { id, type } = props
     const { data, deleteMetadata } = useWorkflowMetadata(id)
     const { patch } = useDocumentOperation(id, type)
-    
 
     const user = useCurrentUser()
     const isAdmin =
@@ -30,7 +29,7 @@ export const PublishAndDeleteMetadata = (
       ...originalResult,
       disabled: originalResult.disabled || !isAdmin,
       label: 'Publish and Delete Metadata',
-      onHandle: async () => {
+      onHandle: () => {
         originalResult.onHandle()
         patch.execute([{ set: { _publishedAt: new Date().toISOString() } }], {
           _id: id,
