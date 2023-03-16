@@ -1,6 +1,7 @@
 import {
   DocumentActionProps,
   useCurrentUser,
+  userHasRole,
   useValidationStatus,
 } from 'sanity'
 import { useWorkflowMetadata } from '../utils/useWorkflowMetadata'
@@ -9,11 +10,11 @@ export const SetReadyForRelease = (props: DocumentActionProps) => {
   const { id, type, draft, onComplete } = props
   const { data, setState } = useWorkflowMetadata(id)
   const { validation, isValidating } = useValidationStatus(id, type)
-
   const user = useCurrentUser()
+  const isAdmin =
+    userHasRole(user, 'administrator') || userHasRole(user, 'editor')
 
   const onHandle = async () => {
-    //TODO: prove out a Slack ping here. We can even use the username!
     setState('readyForRelease')
     onComplete()
   }
@@ -24,7 +25,7 @@ export const SetReadyForRelease = (props: DocumentActionProps) => {
   }
 
   return {
-    disabled: !draft || isValidating || validation.length,
+    disabled: !draft || isValidating || validation.length || !isAdmin,
     label: 'Mark Ready For Release',
     onHandle,
   }

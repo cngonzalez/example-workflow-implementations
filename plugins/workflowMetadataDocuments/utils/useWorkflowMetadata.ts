@@ -13,12 +13,7 @@ export function useWorkflowMetadata(id: string) {
 
   return {
     data,
-    deleteMetadata,
     setState,
-  }
-
-  function deleteMetadata() {
-    ops.delete.execute()
   }
 
   //this will create the doc for us if it doesn't exist, and also set the state we need

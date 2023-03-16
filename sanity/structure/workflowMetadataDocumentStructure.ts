@@ -53,6 +53,8 @@ export const workflowMetadataDocumentStructure: StructureResolver = (
           S.list()
             .title('Workflow')
             .items([
+              S.documentTypeListItem('post').title('All posts'),
+              S.divider(),
               S.listItem()
                 .title('Ready for release')
                 .child(() =>
@@ -72,22 +74,27 @@ export const workflowMetadataDocumentStructure: StructureResolver = (
                   )
                 ),
               S.divider(),
-              S.documentTypeListItem('post').title('All posts'),
+              S.listItem()
+                .title('Unpublished')
+                .child(
+                  S.documentList()
+                    .schemaType('post')
+                    .title('Unpublished')
+                    .filter('_type == "post" && !defined(_publishedAt)')
+                ),
               S.listItem().title('Published').child(
                 S.documentList()
                   .schemaType('post')
                   .title('Published')
-                  .filter('_type == "post" && _publishedAt < now()')
+                  .filter('_type == "post" && defined(_publishedAt)')
                   //don't let people create new posts here
                   .initialValueTemplates([])
               ),
-              S.listItem().title('Scheduled').child(
-                S.documentTypeList('post')
-                  .title('Scheduled')
-                  .filter('_type == "post" && _publishedAt > now()')
-                  //don't let people create new posts here
-                  .initialValueTemplates([])
-              ),
+              S.listItem()
+                .title('Scheduled')
+                .child(() =>
+                  getDocumentsByWorkflowState(S, documentStore, 'scheduled')
+                ),
             ])
         ),
       S.divider(),

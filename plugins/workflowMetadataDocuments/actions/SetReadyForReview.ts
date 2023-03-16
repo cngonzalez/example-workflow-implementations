@@ -1,8 +1,4 @@
-import {
-  DocumentActionProps,
-  useCurrentUser,
-  useValidationStatus,
-} from 'sanity'
+import { DocumentActionProps, useValidationStatus } from 'sanity'
 import { useWorkflowMetadata } from '../utils/useWorkflowMetadata'
 
 export const SetReadyForReview = (props: DocumentActionProps) => {
@@ -11,15 +7,11 @@ export const SetReadyForReview = (props: DocumentActionProps) => {
   const { validation, isValidating } = useValidationStatus(id, type)
   const onHandle = async () => {
     setState('readyForReview')
-    //and ping on Slack with the user we just grabbed!
     onComplete()
   }
 
-  //don't put scheduled drafts back in the workflow
-  if (
-    data ||
-    (draft?._publishedAt && draft._publishedAt > new Date().toISOString())
-  ) {
+  //don't show if we're in the workflow
+  if (data) {
     return null
   }
 

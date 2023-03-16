@@ -2,7 +2,6 @@ import {
   DocumentActionComponent,
   DocumentActionProps,
   useCurrentUser,
-  useDocumentOperation,
   userHasRole,
 } from 'sanity'
 import { useWorkflowMetadata } from '../utils/useWorkflowMetadata'
@@ -11,9 +10,8 @@ export const PublishAndDeleteMetadata = (
   publishAction: DocumentActionComponent
 ) => {
   return (props: DocumentActionProps) => {
-    const { id, type } = props
-    const { data, deleteMetadata } = useWorkflowMetadata(id)
-    const { patch } = useDocumentOperation(id, type)
+    const { id, draft } = props
+    const { data } = useWorkflowMetadata(id)
 
     const user = useCurrentUser()
     const isAdmin =
@@ -27,15 +25,7 @@ export const PublishAndDeleteMetadata = (
 
     return {
       ...originalResult,
-      disabled: originalResult.disabled || !isAdmin,
-      label: 'Publish and Delete Metadata',
-      onHandle: () => {
-        originalResult.onHandle()
-        patch.execute([{ set: { _publishedAt: new Date().toISOString() } }], {
-          _id: id,
-        })
-        deleteMetadata()
-      },
+      disabled: !draft || originalResult.disabled || !isAdmin,
     }
   }
 }

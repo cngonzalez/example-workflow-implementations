@@ -1,11 +1,10 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect } from 'react'
 import {
   DateInput,
   DocumentActionComponent,
   DocumentActionProps,
   useClient,
   useCurrentUser,
-  useDocumentOperation,
   userHasRole,
 } from 'sanity'
 import { useWorkflowMetadata } from '../utils/useWorkflowMetadata'
@@ -14,9 +13,8 @@ export const ScheduleAndDeleteMetadata = (
   scheduleAction: DocumentActionComponent
 ) => {
   return (props: DocumentActionProps) => {
-    const { id, type, draft } = props
-    const { data, deleteMetadata, setState } = useWorkflowMetadata(id)
-    const { patch } = useDocumentOperation(id, type)
+    const { id, draft } = props
+    const { data, setState } = useWorkflowMetadata(id)
     const client = useClient({ apiVersion: '2023-03-15' })
 
     const user = useCurrentUser()
@@ -27,14 +25,9 @@ export const ScheduleAndDeleteMetadata = (
     //scheduled publishing sends window messages. listening to them
     //ensures we don't get into race conditions from onHandle et al.
     useEffect(() => {
-      const scheduleMessages = [
-        'scheduleDelete',
-        'scheduleUpdate',
-        'scheduleCreate',
-      ]
+      const scheduleMessages = ['scheduleDelete', 'scheduleCreate']
       const handleMessageEvent = async (event: MessageEvent) => {
         if (event.type === 'scheduleDelete') {
-          patch.execute([{ unset: ['_publishedAt'] }], { _id: id })
           //there's no more schedule, send doc back to its previous state
           //or to beginning of workflow if needed
           return setState('readyForRelease')
@@ -51,10 +44,7 @@ export const ScheduleAndDeleteMetadata = (
             )
           )
         if (schedule) {
-          patch.execute([{ set: { _publishedAt: schedule.executeAt } }], {
-            _id: id,
-          })
-          return deleteMetadata()
+          return setState('scheduled')
         }
       }
       scheduleMessages.forEach((message) => {
@@ -66,10 +56,10 @@ export const ScheduleAndDeleteMetadata = (
           window.removeEventListener(message, handleMessageEvent)
         })
       }
-    }, [patch, client, id, setState, deleteMetadata])
+    }, [client, id, setState])
 
-    //still show this if no workflow so we can resched
-    if (data && data?.state !== 'readyForRelease') {
+    //still show this if scheduled so we can reschedule
+    if (!['readyForRelease', 'scheduled'].includes(data?.state as string)) {
       return null
     }
 
