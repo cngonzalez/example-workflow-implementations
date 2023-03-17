@@ -9,9 +9,7 @@ import {
 } from 'sanity'
 import { useWorkflowMetadata } from '../utils/useWorkflowMetadata'
 
-export const ScheduleAndDeleteMetadata = (
-  scheduleAction: DocumentActionComponent
-) => {
+export const Schedule = (scheduleAction: DocumentActionComponent) => {
   return (props: DocumentActionProps) => {
     const { id, draft } = props
     const { data, setState } = useWorkflowMetadata(id)

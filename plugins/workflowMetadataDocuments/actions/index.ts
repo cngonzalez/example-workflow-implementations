@@ -1,6 +1,6 @@
 import { DocumentActionComponent, DocumentActionsContext } from 'sanity'
-import { PublishAndDeleteMetadata } from './PublishAndDeleteMetadata'
-import { ScheduleAndDeleteMetadata } from './ScheduleAndDeleteMetadata'
+import { Publish } from './Publish'
+import { Schedule } from './Schedule'
 import { SetReadyForRelease } from './SetReadyForRelease'
 import { SetReadyForReview } from './SetReadyForReview'
 import { ScheduleAction } from '@sanity/scheduled-publishing'
@@ -24,11 +24,8 @@ export const actions = (
   return [
     SetReadyForReview,
     SetReadyForRelease,
-    ScheduleAndDeleteMetadata(scheduleAction),
-    PublishAndDeleteMetadata(publishAction),
-    //this usually won't show up as the default action, but if it does, it will be disabled
-    //for contributors, but available for admins who need to push a quick fix
-    publishAction,
+    Schedule(scheduleAction),
+    Publish(publishAction),
     // scheduleAction,
     ...prev.filter(
       (originalAction) =>

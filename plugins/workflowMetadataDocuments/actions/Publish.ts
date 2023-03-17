@@ -6,9 +6,7 @@ import {
 } from 'sanity'
 import { useWorkflowMetadata } from '../utils/useWorkflowMetadata'
 
-export const PublishAndDeleteMetadata = (
-  publishAction: DocumentActionComponent
-) => {
+export const Publish = (publishAction: DocumentActionComponent) => {
   return (props: DocumentActionProps) => {
     const { id, draft } = props
     const { data } = useWorkflowMetadata(id)
