@@ -14,6 +14,7 @@ import authorType from 'schemas/author'
 import postType from 'schemas/post'
 import settingsType from 'schemas/settings'
 import { scheduledPublishing } from '@sanity/scheduled-publishing'
+import otherDocumentType from 'schemas/otherDocumentType'
 
 /* ABOUT THIS FILE:
  * Each subsequent workspace represents a different, more complex pattern.
@@ -25,7 +26,7 @@ import { scheduledPublishing } from '@sanity/scheduled-publishing'
 const basePlugin = definePlugin({
   name: 'baseConfig',
   schema: {
-    types: [authorType, postType, settingsType],
+    types: [authorType, postType, otherDocumentType, settingsType],
   },
   plugins: [visionTool({ defaultApiVersion: apiVersion })],
 })
