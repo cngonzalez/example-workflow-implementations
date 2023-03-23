@@ -5,7 +5,7 @@ import { SetReadyForRelease } from './SetReadyForRelease'
 import { SetReadyForReview } from './SetReadyForReview'
 import { ScheduleAction } from '@sanity/scheduled-publishing'
 
-const WORKFLOW_DOCUMENT_TYPES = ['post']
+const WORKFLOW_DOCUMENT_TYPES = ['post', 'otherDocumentType']
 
 export const actions = (
   prev: DocumentActionComponent[],

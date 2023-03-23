@@ -9,11 +9,11 @@ import { startCase } from 'lodash'
 const getDocumentsByWorkflowState = (
   S: StructureBuilder,
   documentStore: DocumentStore,
-  //could also add a document type filter if desired, etc.
+  documentType: string,
   workflowState: string
 ) => {
   const query = `*[_type == 'workflow.metadata' && state == '${workflowState}']{
-      'document': *[_id == "drafts." + ^.documentId]{_id,_type}[0]
+      'document': *[_id == 'drafts.' + ^.documentId && _type == '${documentType}']{_id,_type}[0]
     }[].document`
 
   return documentStore
@@ -21,7 +21,7 @@ const getDocumentsByWorkflowState = (
       //query for workflow metadata and get attached docs
       query,
       //params for query
-      { workflowState },
+      {},
       { throttleTime: 1000 }
     )
     .pipe(
@@ -30,8 +30,8 @@ const getDocumentsByWorkflowState = (
         return S.list()
           .title(startCase(workflowState))
           .items(
-            docs.map((doc: SanityDocumentLike) => {
-              return S.documentListItem().id(doc._id).schemaType(doc._type)
+            docs.filter(Boolean).map((doc: SanityDocumentLike) => {
+              return S.documentListItem().id(doc._id).schemaType(documentType)
             })
           )
       })
@@ -56,20 +56,22 @@ export const workflowMetadataDocumentStructure: StructureResolver = (
               S.documentTypeListItem('post').title('All posts'),
               S.divider(),
               S.listItem()
-                .title('Ready for release')
+                .title('Posts ready for release')
                 .child(() =>
                   getDocumentsByWorkflowState(
                     S,
                     documentStore,
+                    'post',
                     'readyForRelease'
                   )
                 ),
               S.listItem()
-                .title('Ready for review')
+                .title('Posts ready for review')
                 .child(() =>
                   getDocumentsByWorkflowState(
                     S,
                     documentStore,
+                    'post',
                     'readyForReview'
                   )
                 ),
@@ -91,9 +93,24 @@ export const workflowMetadataDocumentStructure: StructureResolver = (
                   .initialValueTemplates([])
               ),
               S.listItem()
-                .title('Scheduled')
+                .title('Scheduled posts')
                 .child(() =>
-                  getDocumentsByWorkflowState(S, documentStore, 'scheduled')
+                  getDocumentsByWorkflowState(
+                    S,
+                    documentStore,
+                    'post',
+                    'scheduled'
+                  )
+                ),
+              S.listItem()
+                .title('Scheduled other type')
+                .child(() =>
+                  getDocumentsByWorkflowState(
+                    S,
+                    documentStore,
+                    'otherDocumentType',
+                    'scheduled'
+                  )
                 ),
             ])
         ),
