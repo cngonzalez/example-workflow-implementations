@@ -1,29 +1,25 @@
-import {
-  DocumentActionComponent,
-  DocumentActionProps,
-  useCurrentUser,
-  userHasRole,
-} from 'sanity'
-import { useWorkflowMetadata } from '../utils/useWorkflowMetadata'
+import {DocumentActionComponent, DocumentActionProps, useCurrentUser, userHasRole, useValidationStatus} from 'sanity'
+import {useWorkflowMetadata} from '../utils/useWorkflowMetadata'
 
-export const Publish = (publishAction: DocumentActionComponent) => {
-  return (props: DocumentActionProps) => {
-    const { id, draft } = props
-    const { data } = useWorkflowMetadata(id)
+export function Publish(publishAction: DocumentActionComponent) {
+  const PublishActionWithWorkflow = (props: DocumentActionProps) => {
+    const {id, draft, type} = props
+    const {data} = useWorkflowMetadata(id)
+    const { validation, isValidating } = useValidationStatus(id, type)
 
     const user = useCurrentUser()
-    const isAdmin =
-      userHasRole(user, 'administrator') || userHasRole(user, 'editor')
+    const isAdmin = user && (userHasRole(user, 'administrator') || userHasRole(user, 'editor'))
     const originalResult = publishAction(props)
 
-    //only show if we're ready for release
+    // only show if we're ready for release
     if (data?.state !== 'readyForRelease') {
       return null
     }
 
     return {
       ...originalResult,
-      disabled: !draft || originalResult.disabled || !isAdmin,
+      disabled: !draft || originalResult?.disabled || !isAdmin || isValidating || validation.length,
     }
   }
+  return PublishActionWithWorkflow
 }
