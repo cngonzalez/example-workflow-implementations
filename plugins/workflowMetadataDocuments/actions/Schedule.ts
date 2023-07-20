@@ -1,4 +1,4 @@
-import {useEffect} from 'react'
+import { useEffect } from 'react'
 import {
   DocumentActionComponent,
   DocumentActionProps,
@@ -6,23 +6,25 @@ import {
   useCurrentUser,
   userHasRole,
 } from 'sanity'
-import {useWorkflowMetadata} from '../utils/useWorkflowMetadata'
+import { useWorkflowMetadata } from '../utils/useWorkflowMetadata'
 
 export function Schedule(scheduleAction: DocumentActionComponent) {
   const ScheduleWithWorkflow = (props: DocumentActionProps) => {
-    const {id, draft} = props
-    const {data, setState} = useWorkflowMetadata(id)
-    const client = useClient({apiVersion: '2023-03-15'})
+    const { id, draft } = props
+    const { data, setState } = useWorkflowMetadata(id)
+    const client = useClient({ apiVersion: '2023-03-15' })
 
     const user = useCurrentUser()
-    const isAdmin = user && (userHasRole(user, 'administrator') || userHasRole(user, 'editor'))
+    const isAdmin =
+      user &&
+      (userHasRole(user, 'administrator') || userHasRole(user, 'editor'))
 
     // scheduled publishing sends window messages. listening to them
     // ensures we don't get into race conditions from onHandle et al.
     useEffect(() => {
       const scheduleMessages = ['scheduleDelete', 'scheduleCreate']
       const handleMessageEvent = async () => {
-        const {projectId} = client.config()
+        const { projectId } = client.config()
         const schedule = await client
           .request({
             method: 'GET',
@@ -31,9 +33,10 @@ export function Schedule(scheduleAction: DocumentActionComponent) {
           .then((scheduleData) =>
             scheduleData.schedules.find(
               (s: any) =>
-                s.documents.find((doc: Record<string, any>) => doc.documentId === id) &&
-                s.state === 'scheduled'
-            )
+                s.documents.find(
+                  (doc: Record<string, any>) => doc.documentId === id,
+                ) && s.state === 'scheduled',
+            ),
           )
         if (schedule) {
           return setState('scheduled')
@@ -54,7 +57,10 @@ export function Schedule(scheduleAction: DocumentActionComponent) {
     const originalResult = scheduleAction(props)
 
     // still show this if scheduled so we can reschedule
-    if (!['readyForRelease', 'scheduled'].includes(data?.state as string) || !scheduleAction) {
+    if (
+      !['readyForRelease', 'scheduled'].includes(data?.state as string) ||
+      !scheduleAction
+    ) {
       return null
     }
 

@@ -9,7 +9,7 @@ const WORKFLOW_DOCUMENT_TYPES = ['post', 'otherDocumentType']
 
 export const actions = (
   prev: DocumentActionComponent[],
-  context: DocumentActionsContext
+  context: DocumentActionsContext,
 ) => {
   const { schemaType } = context
 
@@ -30,7 +30,7 @@ export const actions = (
     ...prev.filter(
       (originalAction) =>
         //since we've manually replaced the order for user convenience, filter out the ones we've replaced
-        !overriddenActions.includes(originalAction)
+        !overriddenActions.includes(originalAction),
     ),
   ]
 }

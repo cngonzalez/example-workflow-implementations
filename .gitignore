@@ -18,6 +18,7 @@
 # production
 /build
 /studio/dist
+.sanity
 
 # misc
 .DS_Store
@@ -46,3 +47,7 @@ yarn-error.log*
 # Env files created by scripts for working locally
 .env
 studio/.env.development
+
+# plugins
+.yalc
+yalc.lock

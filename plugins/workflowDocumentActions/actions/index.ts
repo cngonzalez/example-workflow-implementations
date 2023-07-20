@@ -6,7 +6,7 @@ const WORKFLOW_DOCUMENT_TYPES = ['post']
 
 export const actions = (
   prev: DocumentActionComponent[],
-  context: DocumentActionsContext
+  context: DocumentActionsContext,
 ) => {
   const { schemaType } = context
   if (!WORKFLOW_DOCUMENT_TYPES.includes(schemaType)) {

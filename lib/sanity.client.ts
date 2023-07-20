@@ -1,11 +1,11 @@
 import { apiVersion, dataset, projectId, useCdn } from 'lib/sanity.api'
 import {
-  type Post,
-  type Settings,
   indexQuery,
+  type Post,
   postAndMoreStoriesQuery,
   postBySlugQuery,
   postSlugsQuery,
+  type Settings,
   settingsQuery,
 } from 'lib/sanity.queries'
 import { createClient } from 'next-sanity'
@@ -48,7 +48,7 @@ export async function getPostBySlug(slug: string): Promise<Post> {
 
 export async function getPostAndMoreStories(
   slug: string,
-  token?: string | null
+  token?: string | null,
 ): Promise<{ post: Post; morePosts: Post[] }> {
   if (projectId) {
     const client = createClient({

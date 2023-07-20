@@ -4,7 +4,7 @@ export function useWorkflowMetadata(id: string) {
   const editState = useEditState(`workflow-metadata.${id}`, 'workflow.metadata')
   const ops = useDocumentOperation(
     `workflow-metadata.${id}`,
-    'workflow.metadata'
+    'workflow.metadata',
   )
 
   //check if metadata exists. if not, return null
@@ -20,7 +20,7 @@ export function useWorkflowMetadata(id: string) {
   function setState(state: string) {
     ops.patch.execute(
       [{ setIfMissing: { documentId: id } }, { set: { state: `${state}` } }],
-      { _id: id }
+      { _id: id },
     )
   }
 }

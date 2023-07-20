@@ -10,7 +10,7 @@ const getDocumentsByWorkflowState = (
   S: StructureBuilder,
   documentStore: DocumentStore,
   documentType: string,
-  workflowState: string
+  workflowState: string,
 ) => {
   const query = `*[_type == 'workflow.metadata' && state == '${workflowState}']{
       'document': *[_id == 'drafts.' + ^.documentId && _type == '${documentType}']{_id,_type}[0]
@@ -22,7 +22,7 @@ const getDocumentsByWorkflowState = (
       query,
       //params for query
       {},
-      { throttleTime: 1000 }
+      { throttleTime: 1000 },
     )
     .pipe(
       //@ts-ignore
@@ -32,15 +32,15 @@ const getDocumentsByWorkflowState = (
           .items(
             docs.filter(Boolean).map((doc: SanityDocumentLike) => {
               return S.documentListItem().id(doc._id).schemaType(documentType)
-            })
+            }),
           )
-      })
+      }),
     )
 }
 
 export const workflowMetadataDocumentStructure: StructureResolver = (
   S,
-  { documentStore }
+  { documentStore },
 ) => {
   //dont show the workflow metadata documents in the desk
   const omittedTypes = ['workflow.metadata']
@@ -62,8 +62,8 @@ export const workflowMetadataDocumentStructure: StructureResolver = (
                     S,
                     documentStore,
                     'post',
-                    'readyForRelease'
-                  )
+                    'readyForRelease',
+                  ),
                 ),
               S.listItem()
                 .title('Posts ready for review')
@@ -72,8 +72,8 @@ export const workflowMetadataDocumentStructure: StructureResolver = (
                     S,
                     documentStore,
                     'post',
-                    'readyForReview'
-                  )
+                    'readyForReview',
+                  ),
                 ),
               S.divider(),
               S.listItem()
@@ -82,7 +82,7 @@ export const workflowMetadataDocumentStructure: StructureResolver = (
                   S.documentList()
                     .schemaType('post')
                     .title('Unpublished')
-                    .filter('_type == "post" && !defined(_publishedAt)')
+                    .filter('_type == "post" && !defined(_publishedAt)'),
                 ),
               S.listItem().title('Published').child(
                 S.documentList()
@@ -90,7 +90,7 @@ export const workflowMetadataDocumentStructure: StructureResolver = (
                   .title('Published')
                   .filter('_type == "post" && defined(_publishedAt)')
                   //don't let people create new posts here
-                  .initialValueTemplates([])
+                  .initialValueTemplates([]),
               ),
               S.listItem()
                 .title('Scheduled posts')
@@ -99,8 +99,8 @@ export const workflowMetadataDocumentStructure: StructureResolver = (
                     S,
                     documentStore,
                     'post',
-                    'scheduled'
-                  )
+                    'scheduled',
+                  ),
                 ),
               S.listItem()
                 .title('Scheduled other type')
@@ -109,14 +109,14 @@ export const workflowMetadataDocumentStructure: StructureResolver = (
                     S,
                     documentStore,
                     'otherDocumentType',
-                    'scheduled'
-                  )
+                    'scheduled',
+                  ),
                 ),
-            ])
+            ]),
         ),
       S.divider(),
       ...S.documentTypeListItems().filter(
-        (item) => !omittedTypes.includes(item.getId())
+        (item) => !omittedTypes.includes(item.getId()),
       ),
     ])
 }

@@ -1,7 +1,7 @@
 import { SchemaTypeDefinition } from 'sanity'
 
 export const workflowSchemas = (
-  prev: SchemaTypeDefinition[]
+  prev: SchemaTypeDefinition[],
 ): SchemaTypeDefinition[] => {
   return [
     ...prev,

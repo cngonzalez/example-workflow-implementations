@@ -64,7 +64,7 @@ function PagePreviewWithSecret(props: {
         createIfNotExists: true,
       }),
     ['getPreviewSecret', previewSecretDocumentId, FETCH_SECRET],
-    { lifespan: 60000 }
+    { lifespan: 60000 },
   )
 
   if (!secret) {
